@@ -8,7 +8,10 @@ const characterRoutes = require('./routes/characterRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
-
+if (!MONGO_URI) {
+  console.error('❌ MONGO_URI is not defined. Check your .env or Render Environment Variables!');
+  process.exit(1);
+}
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
 
