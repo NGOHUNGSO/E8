@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -6,6 +8,10 @@ const characterRoutes = require('./routes/characterRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
+
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use(cors());
 app.use(express.json());

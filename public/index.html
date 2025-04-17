@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Street Fighters CRUD</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 700px; margin: auto; }
+    input, button { margin: 5px 0; padding: 8px; width: 100%; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    .form-section { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>📋 Quản lý Võ Sĩ Street Fighter</h1>
+
+  <div class="form-section">
+    <input type="text" id="name" placeholder="Tên võ sĩ">
+    <input type="text" id="ultimate" placeholder="Chiêu cuối">
+    <button onclick="addCharacter()">➕ Thêm nhân vật</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tên</th>
+        <th>Chiêu cuối</th>
+      </tr>
+    </thead>
+    <tbody id="characterList"></tbody>
+  </table>
+
+  <script>
+    // Gọi API lấy danh sách nhân vật
+    async function fetchCharacters() {
+      const res = await fetch('/characters');
+      const data = await res.json();
+      const table = document.getElementById('characterList');
+      table.innerHTML = '';
+      data.forEach(c => {
+        table.innerHTML += `<tr><td>${c.name}</td><td>${c.ultimate}</td></tr>`;
+      });
+    }
+
+    // Gọi API thêm nhân vật mới
+    async function addCharacter() {
+      const name = document.getElementById('name').value.trim();
+      const ultimate = document.getElementById('ultimate').value.trim();
+      if (!name || !ultimate) return alert("Vui lòng nhập đầy đủ thông tin!");
+
+      const res = await fetch('/characters', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, ultimate })
+      });
+
+      if (res.ok) {
+        document.getElementById('name').value = '';
+        document.getElementById('ultimate').value = '';
+        fetchCharacters(); // load lại danh sách
+      } else {
+        const err = await res.json();
+        alert("❌ Lỗi: " + err.error);
+      }
+    }
+
+    fetchCharacters();
+  </script>
+</body>
+</html>
